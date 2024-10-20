@@ -13,7 +13,9 @@ This script automates the installation and configuration of Fcitx5 input method,
 - `sudo` privileges to install packages
 
 ## How to Use
-1. Clone this repository:
+1. Do this and it will setup your fcitx(unikey-telex) for vietnamese people:
    ```bash
    git clone https://github.com/Creedguys/setup-fcitx5-for-linux-using-wayland-hyprland-.git
    cd setup-fcitx5-for-linux-using-wayland-hyprland-
+   chmod +x setupfcitx.sh
+   ./setupfcitx.sh
