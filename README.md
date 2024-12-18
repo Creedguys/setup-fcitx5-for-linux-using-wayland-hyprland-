@@ -15,8 +15,8 @@ This script automates the installation and configuration of Fcitx5 input method,
 ## How to Use
 Do this and it will setup your fcitx(unikey-telex):
    ```bash
-   git clone https://github.com/Creedguys/setup-fcitx5-for-linux-using-wayland-hyprland-.git
-   cd setup-fcitx5-for-linux-using-wayland-hyprland-
+   git clone https://github.com/Creedguys/my_setup_fcitx5.git
+   cd my_setuo_fcitx5
    chmod +x setupfcitx.sh
    ./setupfcitx.sh
    
