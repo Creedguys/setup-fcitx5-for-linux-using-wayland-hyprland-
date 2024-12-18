@@ -19,4 +19,6 @@ Do this and it will setup your fcitx(unikey-telex):
    cd my_setup_fcitx5
    chmod +x setupfcitx.sh
    ./setupfcitx.sh
+   cd ..
+   rm -rf my_setup_fcitx5
    
