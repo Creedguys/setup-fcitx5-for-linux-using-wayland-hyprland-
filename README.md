@@ -17,9 +17,9 @@ This script automates the installation and configuration of Fcitx5 input method,
 
 ## How to Use
 To set up Fcitx5 (with Unikey Telex input method), follow these steps:
+```
 
 1. Clone the repository and navigate to the directory:
-
    ```bash
    git clone https://github.com/Creedguys/my_setup_fcitx5.git
    cd my_setup_fcitx5
