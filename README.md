@@ -85,11 +85,3 @@ Feel free to open an issue or submit a pull request if you have suggestions or i
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-```
-
-### Các điểm cập nhật:
-- **Môi trường Desktop**: Phần README đã được cập nhật để mô tả cách kịch bản hoạt động cho các môi trường desktop khác nhau như GNOME, KDE Plasma, XFCE, và LXQt.
-- **Hướng dẫn sử dụng**: Cập nhật cách sử dụng chi tiết để tải về, chạy kịch bản và cấu hình cho các hệ điều hành Arch và Debian.
-- **Thông tin hỗ trợ**: Thêm phần hướng dẫn về cách khắc phục sự cố nếu Fcitx5 không khởi động đúng cách.
-
-Khi bạn sử dụng tệp `README.md` này, người dùng sẽ có cái nhìn tổng quan đầy đủ về tính năng, yêu cầu và cách sử dụng kịch bản cài đặt Fcitx5 của bạn.
