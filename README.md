@@ -1,5 +1,3 @@
-Dưới đây là phiên bản cập nhật của tệp `README.md` với đầy đủ các tính năng cho tất cả các môi trường hệ điều hành và desktop mà bạn yêu cầu:
-
 ```markdown
 # Setup Fcitx5 for Linux using Wayland & Hyprland
 
