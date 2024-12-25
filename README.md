@@ -34,7 +34,7 @@ To set up Fcitx5 (with Unikey Telex input method), follow these steps:
 3. Run the script to install and configure Fcitx5:
 
    ```bash
-   ./setupfcitx.sh
+   bash setupfcitx.sh
    ```
 
 4. Clean up the repository:
