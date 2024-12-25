@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Phát hiện hệ điều hành
 if [ -f /etc/debian_version ]; then
     OS_TYPE="debian"
 elif [ -f /etc/arch-release ]; then
@@ -12,89 +11,59 @@ fi
 
 echo "Detected $OS_TYPE. Proceeding with setup..."
 
-# Cài đặt cho Arch Linux (hoặc Arch-based distros)
+configure_environment() {
+    local ENV_FILE="$HOME/.pam_environment"
+    local XPROFILE_FILE="$HOME/.xprofile"
+    local ENV_CONFIG=("INPUT_METHOD=fcitx5" "GTK_IM_MODULE=fcitx5" "QT_IM_MODULE=fcitx5" "XMODIFIERS=@im=fcitx5")
+
+    echo "Configuring environment variables in $ENV_FILE..."
+    for config in "${ENV_CONFIG[@]}"; do
+        if ! grep -q "$config" "$ENV_FILE" 2>/dev/null; then
+            echo "$config" >> "$ENV_FILE"
+        fi
+    done
+
+    echo "Ensuring fcitx5 starts in $XPROFILE_FILE..."
+    if ! grep -q "fcitx5" "$XPROFILE_FILE" 2>/dev/null; then
+        echo 'fcitx5 &' >> "$XPROFILE_FILE"
+    fi
+}
+
 if [ "$OS_TYPE" = "arch" ]; then
     echo "Installing fcitx5 and unikey for Arch-based distributions..."
     sudo pacman -S --noconfirm fcitx5 fcitx5-unikey fcitx5-gtk fcitx5-qt fcitx5-configtool
-    echo "Configuring environment variables..."
-    if ! grep -q "fcitx5" ~/.pam_environment; then
-        echo 'INPUT_METHOD=fcitx5' >> ~/.pam_environment
-        echo 'GTK_IM_MODULE=fcitx5' >> ~/.pam_environment
-        echo 'QT_IM_MODULE=fcitx5' >> ~/.pam_environment
-        echo 'XMODIFIERS=@im=fcitx5' >> ~/.pam_environment
-    fi
-    echo "Configuring Hyprland to start fcitx5..."
-    if ! grep -q "fcitx5" ~/.config/hypr/hyprland.conf; then
-        echo 'exec-once = fcitx5 &' >> ~/.config/hypr/hyprland.conf
-    fi
-fi
-
-# Cài đặt cho Debian-based distributions (Ubuntu, Debian, Linux Mint, v.v.)
-if [ "$OS_TYPE" = "debian" ]; then
+elif [ "$OS_TYPE" = "debian" ]; then
     echo "Installing fcitx5 and unikey for Debian-based distributions..."
     sudo apt update
     sudo apt install -y fcitx5 fcitx5-unikey fcitx5-gtk fcitx5-qt fcitx5-configtool
-    echo "Configuring environment variables..."
-    if ! grep -q "fcitx5" ~/.pam_environment; then
-        echo 'INPUT_METHOD=fcitx5' >> ~/.pam_environment
-        echo 'GTK_IM_MODULE=fcitx5' >> ~/.pam_environment
-        echo 'QT_IM_MODULE=fcitx5' >> ~/.pam_environment
-        echo 'XMODIFIERS=@im=fcitx5' >> ~/.pam_environment
-    fi
-    echo "Configuring GNOME (or similar desktop environment) to start fcitx5..."
-    if ! grep -q "fcitx5" ~/.xprofile; then
-        echo 'export GTK_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export QT_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export XMODIFIERS="@im=fcitx5"' >> ~/.xprofile
-        echo 'fcitx5 & # Start fcitx5' >> ~/.xprofile
+fi
+
+configure_environment
+
+HYPRLAND_CONF="$HOME/.config/hypr/hyprland.conf"
+if [ -d "$(dirname "$HYPRLAND_CONF")" ] && [ "$OS_TYPE" = "arch" ]; then
+    echo "Configuring Hyprland to start fcitx5..."
+    if ! grep -q "fcitx5" "$HYPRLAND_CONF" 2>/dev/null; then
+        echo 'exec-once = fcitx5 &' >> "$HYPRLAND_CONF"
     fi
 fi
 
-# Cấu hình cho tất cả các môi trường desktop
-echo "Configuring desktop environment for fcitx5..."
+configure_desktop_environment() {
+    local DESKTOP_ENV="$1"
+    local XDG_CONFIG="$HOME/.xprofile"
 
-# Kiểm tra môi trường GNOME
-if [ -n "$XDG_CURRENT_DESKTOP" ] && [[ "$XDG_CURRENT_DESKTOP" == "GNOME" || "$XDG_CURRENT_DESKTOP" == "ubuntu" ]]; then
-    echo "Detected GNOME or Ubuntu environment. Ensuring fcitx5 starts automatically..."
-    if ! grep -q "fcitx5" ~/.xprofile; then
-        echo 'export GTK_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export QT_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export XMODIFIERS="@im=fcitx5"' >> ~/.xprofile
-        echo 'fcitx5 & # Start fcitx5' >> ~/.xprofile
+    echo "Detected $DESKTOP_ENV environment. Ensuring fcitx5 starts automatically..."
+    if ! grep -q "fcitx5" "$XDG_CONFIG" 2>/dev/null; then
+        echo 'fcitx5 &' >> "$XDG_CONFIG"
     fi
-fi
+}
 
-# Kiểm tra môi trường KDE Plasma
-if [ -n "$XDG_CURRENT_DESKTOP" ] && [[ "$XDG_CURRENT_DESKTOP" == "KDE" || "$XDG_CURRENT_DESKTOP" == "Plasma" ]]; then
-    echo "Detected KDE Plasma environment. Ensuring fcitx5 starts automatically..."
-    if ! grep -q "fcitx5" ~/.xprofile; then
-        echo 'export GTK_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export QT_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export XMODIFIERS="@im=fcitx5"' >> ~/.xprofile
-        echo 'fcitx5 & # Start fcitx5' >> ~/.xprofile
-    fi
-fi
-
-# Kiểm tra môi trường XFCE
-if [ -n "$XDG_CURRENT_DESKTOP" ] && [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]]; then
-    echo "Detected XFCE environment. Ensuring fcitx5 starts automatically..."
-    if ! grep -q "fcitx5" ~/.xprofile; then
-        echo 'export GTK_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export QT_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export XMODIFIERS="@im=fcitx5"' >> ~/.xprofile
-        echo 'fcitx5 & # Start fcitx5' >> ~/.xprofile
-    fi
-fi
-
-# Kiểm tra môi trường LXQt
-if [ -n "$XDG_CURRENT_DESKTOP" ] && [[ "$XDG_CURRENT_DESKTOP" == "LXQt" ]]; then
-    echo "Detected LXQt environment. Ensuring fcitx5 starts automatically..."
-    if ! grep -q "fcitx5" ~/.xprofile; then
-        echo 'export GTK_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export QT_IM_MODULE=fcitx5' >> ~/.xprofile
-        echo 'export XMODIFIERS="@im=fcitx5"' >> ~/.xprofile
-        echo 'fcitx5 & # Start fcitx5' >> ~/.xprofile
-    fi
-fi
+case "$XDG_CURRENT_DESKTOP" in
+    GNOME|ubuntu) configure_desktop_environment "GNOME/Ubuntu" ;;
+    KDE|Plasma) configure_desktop_environment "KDE Plasma" ;;
+    XFCE) configure_desktop_environment "XFCE" ;;
+    LXQt) configure_desktop_environment "LXQt" ;;
+    *) echo "Desktop environment not specifically supported. Using default configuration." ;;
+esac
 
 echo "Setup complete! Please restart your system or logout and log back in for the changes to take effect."
